@@ -23,15 +23,11 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    sourceSets.commonMain {
-        kotlin.srcDir("build/generated/ksp/metadata")
-    }
-
     sourceSets {
         commonMain.dependencies {
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
-            implementation(libs.sqlite)
+            implementation(libs.androidx.sqlite)
             implementation(project(":core"))
         }
     }
@@ -59,24 +55,15 @@ room {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", libs.androidx.room.compiler)
-}
-tasks.named("build") {
-    dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
-}
-
-tasks.withType<KotlinNativeCompile>().configureEach {
-    dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
-}
-
-tasks.named("compileKotlinJvm") {
-    dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
-}
-
-tasks.named("jvmSourcesJar") {
-    dependsOn(tasks.named("kspCommonMainKotlinMetadata"))
+    implementation(libs.androidx.sqlite.ktx)
+    dependencies {
+        listOf(
+            "kspCommonMainMetadata",
+            "kspAndroid",
+            "kspJvm",
+            "kspIosSimulatorArm64",
+            "kspIosX64",
+            "kspIosArm64",
+        ).forEach { add(it, libs.androidx.room.compiler) }
+    }
 }

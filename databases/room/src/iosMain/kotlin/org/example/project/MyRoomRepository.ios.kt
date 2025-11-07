@@ -26,8 +26,7 @@ actual class MyRoomRepositoryImpl private constructor(
             if (repo == null) synchronized(so){
                 if (repo  == null) repo = MyRoomRepositoryImpl(
                     Room.databaseBuilder<MyRoomDatabase>(
-                        name = dbPath,
-                        factory = { MyRoomDatabase::class.instantiateImpl() }
+                        name = dbPath
                     ).configure()
                 )
             }
